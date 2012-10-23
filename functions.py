@@ -10,7 +10,7 @@ def ApproximateJacobian(f, x, dx=1e-6):
     fx = f(x)
     Df_x = np.matrix(np.zeros((n, n)))
     for i in range(n):
-        v = np.matrix(np.zeros((n, 1)))
+        v = np.zeros((n, 1))
         v[i, 0] = dx
         Df_x[:, i] = f(x + v) - fx
     return Df_x
