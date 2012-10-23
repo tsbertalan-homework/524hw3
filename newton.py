@@ -6,6 +6,7 @@
 import numpy as N
 import functions as F
 
+
 class Newton(object):
     def __init__(self, f, tol=1.e-6, maxiter=20, dx=1.e-6):
         """Return a new object to find roots of f(x) = 0 using Newton's method.

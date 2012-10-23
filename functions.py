@@ -1,5 +1,6 @@
 import numpy as N
 
+
 def ApproximateJacobian(f, x, dx=1e-6):
     """Return an approximation of the Jacobian Df(x) as a numpy matrix"""
     try:
@@ -7,12 +8,13 @@ def ApproximateJacobian(f, x, dx=1e-6):
     except TypeError:
         n = 1
     fx = f(x)
-    Df_x = N.matrix(N.zeros((n,n)))
+    Df_x = N.matrix(N.zeros((n, n)))
     for i in range(n):
-        v = N.matrix(N.zeros((n,1)))
-        v[i,0] = dx
-        Df_x[:,i] = f(x + v) - fx
+        v = N.matrix(N.zeros((n, 1)))
+        v[i, 0] = dx
+        Df_x[:, i] = f(x + v) - fx
     return Df_x
+
 
 class Polynomial(object):
     """Callable polynomial object.
@@ -29,10 +31,10 @@ class Polynomial(object):
     def __repr__(self):
         return "Polynomial(%s)" % (", ".join([str(x) for x in self._coeffs]))
 
-    def f(self,x):
+    def f(self, x):
         ans = self._coeffs[0]
         for c in self._coeffs[1:]:
-            ans = x*ans + c
+            ans = x * ans + c
         return ans
 
     def __call__(self, x):
