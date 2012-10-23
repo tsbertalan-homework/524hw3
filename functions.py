@@ -1,4 +1,4 @@
-import numpy as N
+import numpy as np
 
 
 def ApproximateJacobian(f, x, dx=1e-6):
@@ -8,9 +8,9 @@ def ApproximateJacobian(f, x, dx=1e-6):
     except TypeError:
         n = 1
     fx = f(x)
-    Df_x = N.matrix(N.zeros((n, n)))
+    Df_x = np.matrix(np.zeros((n, n)))
     for i in range(n):
-        v = N.matrix(N.zeros((n, 1)))
+        v = np.matrix(np.zeros((n, 1)))
         v[i, 0] = dx
         Df_x[:, i] = f(x + v) - fx
     return Df_x

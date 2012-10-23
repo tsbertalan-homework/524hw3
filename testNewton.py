@@ -2,7 +2,7 @@
 
 import newton
 import unittest
-import numpy as N
+import numpy as np
 
 
 class TestNewton(unittest.TestCase):
