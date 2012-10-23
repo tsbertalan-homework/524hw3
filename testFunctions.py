@@ -7,6 +7,9 @@ import unittest
 
 class TestFunctions(unittest.TestCase):
     def testApproxJacobian1(self):
+        '''For a linear function of one variable, checks
+            (1) that the Jacobian's shape is (1, 1)
+            (2) that the Jacobian is correct.'''
         slope = 3.0
 
         def f(x):
@@ -18,6 +21,9 @@ class TestFunctions(unittest.TestCase):
         self.assertAlmostEqual(Df_x, slope)
 
     def testApproxJacobian2(self):
+        '''For a linear function of two variables, checks
+            (1) that the Jacobian's shape is (2, 2)
+            (2) that the Jacobian is correct (via ...almost_equal...)'''
         A = np.matrix("1. 2.; 3. 4.")
 
         def f(x):
@@ -29,6 +35,8 @@ class TestFunctions(unittest.TestCase):
         np.testing.assert_array_almost_equal(Df_x, A)
 
     def testPolynomial(self):
+        '''Tests the __call__() method of the functions.Polynomial() class
+        by comparing its output to a (slightly) more explicity calculation.'''
         # p(x) = x^2 + 2x + 3
         p = F.Polynomial([1, 2, 3])
         for x in np.linspace(-2, 2, 11):
