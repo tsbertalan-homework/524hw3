@@ -127,25 +127,63 @@ class TestNewton(unittest.TestCase):
             dy[0, 1] = 0
             dy[1, 1] = f11(x[1])
             return dy
-        print 'testNewton'
         solver = newton.Newton(f, jacobian=Df)
         # self.assertIs(solver._jacobian, Df) # this doesn't work.
-        a = 'dummy'  # solver._jacobian has an underscore for a reason:
-        b = a  # it requires these dummy arguments, to be compatible with functions.ApproximateJacobian()
+        a = b = 'dummy'  # solver._jacobian has an underscore for a reason:
+        # it requires these dummy arguments, to be compatible with functions.ApproximateJacobian()
 #        for x in xrange(-10, 10, 30):
 #            self.assertEqual(solver._jacobian(a, x, b), Df(x))  # is this just busywork?
         x1actual = np.matrix("-2.522588 ; -0.897057")
         x2actual = np.matrix("1.189285  ; 0.671251")
         x01 = np.matrix("-3; -1")
-        x02 = np.matrix("2; 1")
+        x02 = np.matrix(" 2;  1")
         x1 = solver.solve(x01, verbose=False)
         x2 = solver.solve(x02, verbose=False)
         np.testing.assert_array_almost_equal(x1, x1actual, decimal=4)
         np.testing.assert_array_almost_equal(x2, x2actual, decimal=4)
 
-    def testPolynomial(self):
-        '''Try solving a polynomial, using the Polynomial class.'''
-        pass
+    def testMixedJacobian(self):
+        '''solves f1(x,y) and f2(x,y), rather than simply f1(x) and f2(y)'''
+        def f(X):
+            f1x = F.Polynomial([1,  2, -3])
+            f1y = F.Polynomial([2,  1, -4])
+            f2x = F.Polynomial([4, -3, -2])
+            f2y = F.Polynomial([-2, 4, -2])
+            y = np.matrix(np.zeros((2, 1)))
+            y[0] = f1x(X[0]) + f1y(X[1])
+            y[1] = f2x(X[0]) + f2y(X[1])
+            return y
+        
+        def Df(X):
+            f00 = F.Polynomial([2,  2])  # function of X[0] only
+            f01 = F.Polynomial([4,  1])  # function of X[1] only
+            f10 = F.Polynomial([8, -3])
+            f11 = F.Polynomial([-4, 4])
+            dy = np.matrix(np.zeros((2,2)))
+            dy[0, 0] = f00(X[0])
+            dy[0, 1] = f00(X[1])
+            dy[1, 0] = f00(X[0])
+            dy[1, 1] = f00(X[1])
+            return dy
+        
+        solver = newton.Newton(f)
+        a = b = 'dummy'
+        x1actual = np.matrix("-1.98594 ; -2.14115")
+        x2actual = np.matrix("-0.582749 ; 1.74385")
+        x3actual = np.matrix("1.17623 ; 1.05174")
+        x4actual = np.matrix("1.79246 ; -0.654438")
+        x01 = np.matrix("-2; -2")
+        x02 = np.matrix("-1;  2")
+        x03 = np.matrix(" 2;  1")
+        x04 = np.matrix(" 2;  -1")
+        x1 = solver.solve(x01)
+        x2 = solver.solve(x02)
+        x3 = solver.solve(x03)
+        x4 = solver.solve(x04)
+        np.testing.assert_array_almost_equal(x1, x1actual, decimal=4)
+        np.testing.assert_array_almost_equal(x2, x2actual, decimal=4)
+        np.testing.assert_array_almost_equal(x3, x3actual, decimal=4)
+        np.testing.assert_array_almost_equal(x4, x4actual, decimal=4)
 
     def testSine(self):
         '''This might actually be a bad idea.'''
