@@ -42,6 +42,13 @@ class TestFunctions(unittest.TestCase):
         for x in np.linspace(-2, 2, 11):
             self.assertEqual(p(x), x ** 2 + 2 * x + 3)
 
+    def testPolynomialNegativeCoeffs(self):
+        '''I don't see how that polynomial is working at all.
+        Maybe if I tried using negative as well as positive coefficients,
+        it would fail?'''
+        pass
+
+
 if __name__ == '__main__':
     unittest.main()
 
