@@ -66,6 +66,14 @@ class TestFunctions(unittest.TestCase):
         for x in np.linspace(-2, 2, 11):
             self.assertEqual(p(x), x ** 2 + 2 * x + 3)
 
+    def testCompareJacobians1DLinear(self):
+        '''Checks that a Jacobian function is the same as its approximation.'''
+        f = lambda x: 3.0 * x ** 2 + 4.0 * x - 9.0
+        Df = lambda x: 6.0 * x + 4.0
+        testcases = np.arange(-2, 2, .1)
+        F.TestJacobian(f, Df, testcases, decimal=5)
+        
+
     def testPolynomialNegativeCoeffs(self):
         '''Maybe if I tried using negative as well as positive coefficients,
         it would fail?'''

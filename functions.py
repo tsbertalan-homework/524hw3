@@ -19,7 +19,7 @@ def ApproximateJacobian(f, x, dx=1e-6):
 def TestJacobian(f, Df, testcases, dx=1e-6, decimal=6):
     '''Check an analytical Jacobian function Df against the numerical
     approximation produced from the original function f. Check for each of the
-    testcases (N-by-1 matrices) in the list testcases.'''
+    test cases (N-by-1 matrices) in the list testcases.'''
     for x in testcases:
         analytical = Df(x)
         numerical  = ApproximateJacobian(f, x, dx=dx)
