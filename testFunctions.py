@@ -34,6 +34,16 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(Df_x.shape, (2, 2))
         np.testing.assert_array_almost_equal(Df_x, A)
 
+    def testApproxJacobianRandom(self):
+        N = 20
+        A = np.random.rand(N,N)
+        x0 = np.random.rand(N,1)
+        dx = 1.e-6
+        f = lambda x: A * x
+        Df_x = F.ApproximateJacobian(f, x0, dx)
+        self.assertEqual(Df_x.shape, (N, N))
+        np.testing.assert_array_almost_equal(Df_x, A)
+
     def testPolynomial(self):
         '''Tests the __call__() method of the functions.Polynomial() class
         by comparing its output to a (slightly) more explicity calculation.'''
