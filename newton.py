@@ -43,7 +43,7 @@ class Newton(object):
         if norm < self._tol:
             return x
         else:
-            raise TooManyIterationsException(self._maxiter, norm) # TODO Alexander had the idea to use a custom exception type here.
+            raise TooManyIterations(self._maxiter, norm) # TODO Alexander had the idea to use a custom exception type here.
 
     def step(self, x, fx=None):
         '''Take a single step of a Newton method, starting from x
@@ -55,7 +55,7 @@ class Newton(object):
         h = np.linalg.solve(np.matrix(Df_x), np.matrix(fx))
         return x - h
 
-class TooManyIterationsException(Exception):
+class TooManyIterations(Exception):
 
     def __init__(self, iters, norm):
         self.iters = iters
