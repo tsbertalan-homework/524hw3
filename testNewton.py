@@ -105,6 +105,7 @@ class TestNewton(unittest.TestCase):
         x2 = solver.solve(2)
         self.assertAlmostEqual(x1, x1actual, places=4)
         self.assertAlmostEqual(x2, x2actual, places=4)
+        F.TestJacobian(f, Df, np.arange(-2, 2, .1), decimal=5)
 
     def testAnalyticalJacobian2D(self):
         '''In 2D, Supply a Jacobian function to newton.__init__(), and check
@@ -141,6 +142,7 @@ class TestNewton(unittest.TestCase):
         x2 = solver.solve(x02, verbose=False)
         np.testing.assert_array_almost_equal(x1, x1actual, decimal=4)
         np.testing.assert_array_almost_equal(x2, x2actual, decimal=4)
+        F.TestJacobian(f, Df, [x01, x2, x1, x2], decimal=5) # any (2,1) matrix should work as input.
 
     def testMixedJacobian(self):
         '''solves f1(x,y) and f2(x,y), rather than simply f1(x) and f2(y)'''
@@ -184,6 +186,7 @@ class TestNewton(unittest.TestCase):
         np.testing.assert_array_almost_equal(x2, x2actual, decimal=4)
         np.testing.assert_array_almost_equal(x3, x3actual, decimal=4)
         np.testing.assert_array_almost_equal(x4, x4actual, decimal=4)
+        F.TestJacobian(f, Df, [x01, x02, x03, x04, x1, x2, x3, x4], decimal=5)
 
     def testSine(self):
         '''This might actually be a bad idea.'''
