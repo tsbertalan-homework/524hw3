@@ -48,7 +48,7 @@ class TestFunctions(unittest.TestCase):
 
     def testPolynomial(self):
         '''Tests the __call__() method of the functions.Polynomial() class
-        by comparing its output to a (slightly) more explicity calculation.'''
+        by comparing its output to a (slightly) more explicit calculation.'''
         # p(x) = x^2 + 2x + 3
         p = F.Polynomial([1, 2, 3])
         for x in np.linspace(-2, 2, 11):

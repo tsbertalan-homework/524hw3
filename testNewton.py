@@ -9,7 +9,7 @@ class TestNewton(unittest.TestCase):
     def testLinear(self):
         '''Tests newton.solve() with a linear function of one variable.'''
         f = lambda x: 3.0 * x + 6.0
-        solver = newton.Newton(f, tol=1.e-15, maxiter=3)
+        solver = newton.Newton(f, tol=1.e-15, maxiter=3) # TODO why is maxiter=3 required?
         x = solver.solve(2.0)
         self.assertEqual(x, -2.0)
 
@@ -86,6 +86,25 @@ class TestNewton(unittest.TestCase):
         f = lambda x: 5 * x ** 2 + 3 * x + 6
         solver = newton.Newton(f, tol=1.e-15)
         self.assertRaises(OverflowError, solver.solve, 2)
+
+    def testAnalyticalJacobian1D(self):
+        '''In 1D, Supply a Jacobian function to newton.__init__(), and check
+        (1) that the solver._jacobian member function is that function
+        (2) that the solution is still good.'''
+        f = lambda x: 3.0 * x ** 2 + 4.0 * x - 9.0
+        Df = lambda x: 6.0 * x + 4.0
+        solver = newton.Newton(f, jacobian=Df)
+        # self.assertIs(solver._jacobian, Df) # this doesn't work.
+        a = 'dummy'  # solver._jacobian has an underscore for a reason:
+        b = a  # it requires these dummy arguments, to be compatible with functions.ApproximateJacobian()
+        for x in xrange(-10, 10, 30):
+            self.assertEqual(solver._jacobian(a, x, b), Df(x))  # is this just busywork?
+        x1actual = -2.52259
+        x2actual = 1.18925
+        x1 = solver.solve(-3.0)
+        x2 = solver.solve(2)
+        self.assertAlmostEqual(x1, x1actual, places=4)
+        self.assertAlmostEqual(x2, x2actual, places=4)
 
     def testPolynomial(self):
         '''Try solving a polynomial, using the Polynomial class.'''

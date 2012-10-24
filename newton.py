@@ -35,7 +35,7 @@ class Newton(object):
             if norm < self._tol:
                 return x
             x = self.step(x, fx)
-        norm = np.linalg.norm(fx)  # we shouldn't be here unless
+#        norm = np.linalg.norm(fx)  # we shouldn't be here unless
 #        print "After %i iterations, norm was still %f." % (self._maxiter, norm)
         raise OverflowError # TODO Alexander had the idea to use a custom exception type here.
 
