@@ -37,7 +37,7 @@ class TestFunctions(unittest.TestCase):
     def testApproxJacobianRandom(self):
         '''This currently fails because only matrices (not arrays, as returned 
         by np.random.rand() are properly handled.'''
-        N = 20
+        N = 200
         A = np.matrix(np.random.rand(N,N))
         x0 = np.matrix(np.random.rand(N,1))
         dx = 1.e-6
