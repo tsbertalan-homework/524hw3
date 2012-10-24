@@ -84,7 +84,7 @@ class TestNewton(unittest.TestCase):
         HAS NO REAL ROOTS. The maximum number of iterations should be reached
         quickly.'''
         f = lambda x: 5 * x ** 2 + 3 * x + 6
-        solver = newton.Newton(f, tol=1.e-15)
+        solver = newton.Newton(f, tol=1.e-15, maxiter=40, threshold_radius=1)
         self.assertRaises(newton.TooManyIterations, solver.solve, 2)
 
     def testAnalyticalJacobian1D(self):
