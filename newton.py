@@ -30,7 +30,7 @@ class Newton(object):
                 return x
             x = self.step(x, fx)
         norm = np.linalg.norm(fx)  # we shouldn't be here unless
-        print "After %i iterations, norm was still %f." % (self._maxiter, norm)
+#        print "After %i iterations, norm was still %f." % (self._maxiter, norm)
         raise ValueError # TODO Alexander had the idea to use a custom exception type here.
 
     def step(self, x, fx=None):
