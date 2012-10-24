@@ -35,15 +35,27 @@ class TestFunctions(unittest.TestCase):
         np.testing.assert_array_almost_equal(Df_x, A)
 
     def testApproxJacobianRandom(self):
-        '''This currently fails because only matrices (not arrays, as returned
+        '''This currently fails because only matrices (not arrays, as returned 
         by np.random.rand() are properly handled.'''
         N = 20
-        A = np.random.rand(N,N)
-        x0 = np.random.rand(N,1)
+        A = np.matrix(np.random.rand(N,N))
+        x0 = np.matrix(np.random.rand(N,1))
         dx = 1.e-6
         f = lambda x: A * x
         Df_x = F.ApproximateJacobian(f, x0, dx)
         self.assertEqual(Df_x.shape, (N, N))
+        np.testing.assert_array_almost_equal(Df_x, A)
+
+    def testApproxJacobianArrays(self):
+        '''Same as testApproxJacobian2, but with arrays rather than matrices'''
+        A = np.array(np.matrix("1. 2.; 3. 4."))
+
+        def f(x):
+            return A * x
+        x0 = np.array(np.matrix("5; 6"))
+        dx = 1.e-6
+        Df_x = F.ApproximateJacobian(f, x0, dx)
+        self.assertEqual(Df_x.shape, (2, 2))
         np.testing.assert_array_almost_equal(Df_x, A)
 
     def testPolynomial(self):
