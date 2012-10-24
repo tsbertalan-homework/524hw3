@@ -85,7 +85,7 @@ class TestNewton(unittest.TestCase):
         quickly.'''
         f = lambda x: 5 * x ** 2 + 3 * x + 6
         solver = newton.Newton(f, tol=1.e-15)
-        self.assertRaises(newton.TooManyIterationsException, solver.solve, 2)
+        self.assertRaises(newton.TooManyIterations, solver.solve, 2)
 
     def testAnalyticalJacobian1D(self):
         '''In 1D, Supply a Jacobian function to newton.__init__(), and check
