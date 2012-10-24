@@ -13,6 +13,15 @@ class TestNewton(unittest.TestCase):
         x = solver.solve(2.0)
         self.assertEqual(x, -2.0)
 
+    def testTolerance(self):
+        '''Is the tol=??? keyword actually being set? Is it being used?'''
+        f = lambda x: 3.0 * x + 6.0
+        tolerance = 1.e-15
+        solver = newton.Newton(f, tol=tolerance)
+        self.assertEqual(solver._tol, tolerance)
+        x = solver.solve(2.0)
+        self.assertTrue(np.linalg.norm(f(x)) < tolerance)
+
     def testStep1Var(self):
         '''Tests newton.step() with a single-variable linear function.
         x_{k+1} = x - Df(x)^{-1}*f(x)'''
