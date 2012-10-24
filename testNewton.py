@@ -34,7 +34,8 @@ class TestNewton(unittest.TestCase):
         solver = newton.Newton(f)
         x0 = np.matrix([[3.0], [5.6]])
         stepresult = solver.step(x0)
-#        correct = x0 - np.linalg.solve(slope_matrix, f(x0))  # This also works.
+        correct = x0 - np.linalg.solve(slope_matrix, f(x0)) # TODO I should also try using OpenMG.solve()
+        np.testing.assert_array_almost_equal(stepresult, correct)
         correct = x0 - np.dot(np.linalg.inv(slope_matrix), f(x0)) # TODO maybe I should do this manually
         np.testing.assert_array_almost_equal(stepresult, correct)
 
@@ -61,15 +62,27 @@ class TestNewton(unittest.TestCase):
     def testQuadratic(self):
         '''Tests newton.solve() with a quadratic function of one variable.'''
         f = lambda x: 5 * x ** 2 + 3 * x - 6
-        solver = newton.Newton(f, tol=1.e-15, maxiter=2)
+        solver = newton.Newton(f, tol=1.e-15)
         x1actual = -1.4358
         x2actual = 0.83578
         x1 = solver.solve(-2)
         x2 = solver.solve(1)
         np.testing.assert_array_almost_equal(x1, np.matrix([[x1actual]]), decimal=2)
         np.testing.assert_array_almost_equal(x2, np.matrix([[x2actual]]), decimal=2)
+#        Alternately, it should fail if there aren't any roots (real ones)!
 
-#        Alternately, it should fail if there aren't any (real ones)!
+    def testMaxIterationsException(self):
+        '''Tests newton.solve() with a quadratic function of one variable THAT
+        HAS NO REAL ROOTS. The maximum number of iterations should be reached
+        quickly.'''
+        f = lambda x: 5 * x ** 2 + 3 * x + 6
+        solver = newton.Newton(f, tol=1.e-15)
+        try:
+            x1 = solver.solve(-2)
+            print "Didn't get the expected error for exceeding maxiter"
+            raise(AssertionError) # This might not be the right
+        except ValueError:
+            pass
 
     def testPolynomial(self):
         '''Try solving a polynomial, using the Polynomial class.'''
