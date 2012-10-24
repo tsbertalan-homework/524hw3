@@ -35,9 +35,12 @@ class Newton(object):
             if norm < self._tol:
                 return x
             x = self.step(x, fx)
-#        norm = np.linalg.norm(fx)  # we shouldn't be here unless
+        norm = np.linalg.norm(fx)
 #        print "After %i iterations, norm was still %f." % (self._maxiter, norm)
-        raise OverflowError # TODO Alexander had the idea to use a custom exception type here.
+        if norm < self._tol:
+            return x
+        else:
+            raise TooManyIterationsException(norm) # TODO Alexander had the idea to use a custom exception type here.
 
     def step(self, x, fx=None):
         '''Take a single step of a Newton method, starting from x
@@ -48,3 +51,11 @@ class Newton(object):
         Df_x = self._jacobian(self._f, x, self._dx)
         h = np.linalg.solve(np.matrix(Df_x), np.matrix(fx))
         return x - h
+
+class TooManyIterationsException(Exception):
+
+    def __init__(self, norm):
+        self.norm = norm
+        Exception.__init__(self, 'Maximum number of iterations exceeded, with final norm=%f'%self.norm)
+    def __str__(self):
+        return repr('Maximum number of iterations exceeded, with final norm=%f'%self.norm)
