@@ -77,12 +77,7 @@ class TestNewton(unittest.TestCase):
         quickly.'''
         f = lambda x: 5 * x ** 2 + 3 * x + 6
         solver = newton.Newton(f, tol=1.e-15)
-        try:
-            x1 = solver.solve(-2)
-            print "Didn't get the expected error for exceeding maxiter"
-            raise(AssertionError) # This might not be the right
-        except ValueError:
-            pass
+        self.assertRaises(ValueError, solver.solve, 2)
 
     def testPolynomial(self):
         '''Try solving a polynomial, using the Polynomial class.'''
