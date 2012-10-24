@@ -111,11 +111,11 @@ class TestNewton(unittest.TestCase):
         (1) that the solver._jacobian member function is that function
         (2) that the solution is still good.'''
         def f(x):
-            f1 = F.Polynomial([3.0, 4.0, -9.0])
-            f2 = F.Polynomial([9.3, 2.1, -5.6])  # x = {-0.897057, 0.671251}
-            y = np.matrix(np.zeros((2, 1)))
+            f1 = F.Polynomial([3.0, 4.0, -9.0])  # solutions of this polynomial are -2.522588 and 1.189285
+            f2 = F.Polynomial([9.3, 2.1, -5.6])   # solutions of this polynomial are -0.897057 and 0.671251
+            y = np.matrix(np.zeros((2, 1)))  # should have solutions (-2.52259, 0.491228) and (1.18925, 0.491228)
             y[0] = f1(x[0])
-            y[0] = f2(x[1])
+            y[1] = f2(x[1])
             return y
 
         def Df(x):
@@ -128,20 +128,20 @@ class TestNewton(unittest.TestCase):
             dy[1, 1] = f11(x[1])
             return dy
         print 'testNewton'
-        solver = newton.Newton(f, jacobian=Df, maxiter=1)
+        solver = newton.Newton(f, jacobian=Df)
         # self.assertIs(solver._jacobian, Df) # this doesn't work.
         a = 'dummy'  # solver._jacobian has an underscore for a reason:
         b = a  # it requires these dummy arguments, to be compatible with functions.ApproximateJacobian()
 #        for x in xrange(-10, 10, 30):
 #            self.assertEqual(solver._jacobian(a, x, b), Df(x))  # is this just busywork?
-#        x1actual = -2.52259
-#        x2actual = 1.18925
-        x01 = np.matrix("-3.0;  -1")
+        x1actual = np.matrix("-2.522588 ; -0.897057")
+        x2actual = np.matrix("1.189285  ; 0.671251")
+        x01 = np.matrix("-3; -1")
         x02 = np.matrix("2; 1")
-        x1 = solver.solve(x01)
-        x2 = solver.solve(x02)
-#        self.assertAlmostEqual(x1, x1actual, places=4)
-#        self.assertAlmostEqual(x2, x2actual, places=4)
+        x1 = solver.solve(x01, verbose=False)
+        x2 = solver.solve(x02, verbose=False)
+        np.testing.assert_array_almost_equal(x1, x1actual, decimal=4)
+        np.testing.assert_array_almost_equal(x2, x2actual, decimal=4)
 
     def testPolynomial(self):
         '''Try solving a polynomial, using the Polynomial class.'''
