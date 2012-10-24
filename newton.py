@@ -24,10 +24,14 @@ class Newton(object):
         x = x0
         for i in xrange(self._maxiter):
             fx = self._f(x)
-            if np.linalg.norm(fx) < self._tol:
+            norm = np.linalg.norm(fx)
+#            print "norm is", norm
+            if norm < self._tol:
                 return x
             x = self.step(x, fx)
-        return x
+        norm = np.linalg.norm(fx)  # we shouldn't be here unless
+        print "After %i iterations, norm was still %f." % (self._maxiter, norm)
+        raise ValueError # TODO Alexander had the idea to use a custom exception type here.
 
     def step(self, x, fx=None):
         """Take a single step of a Newton method, starting from x
