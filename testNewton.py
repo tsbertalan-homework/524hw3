@@ -10,7 +10,7 @@ class TestNewton(unittest.TestCase):
         '''Tests newton.solve() with a linear function of one variable.'''
         f = lambda x: 3.0 * x + 6.0
         solver = newton.Newton(f, tol=1.e-15, maxiter=2)
-        x = solver.solve(2.0,derp='dorp')
+        x = solver.solve(2.0)
         self.assertEqual(x, -2.0)
 
     def testStep1Var(self):
