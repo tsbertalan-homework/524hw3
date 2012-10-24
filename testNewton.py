@@ -78,7 +78,6 @@ class TestNewton(unittest.TestCase):
         x2 = solver.solve(1)
         np.testing.assert_array_almost_equal(x1, np.matrix([[x1actual]]), decimal=2)
         np.testing.assert_array_almost_equal(x2, np.matrix([[x2actual]]), decimal=2)
-#        Alternately, it should fail if there aren't any roots (real ones)!
 
     def testMaxIterationsException(self):
         '''Tests newton.solve() with a quadratic function of one variable THAT
