@@ -49,7 +49,9 @@ class TestNewton(unittest.TestCase):
         x0 = np.random.rand(N, 1)
         stepresult = solver.step(x0)
         correct = x0 - np.dot(np.linalg.inv(slope_matrix), f(x0))
-        np.testing.assert_array_almost_equal(stepresult, correct)
+        # the following sometimes fails erroneously for the default value of
+        # decimal=6 . It seems to always fail for decimal=7
+        np.testing.assert_array_almost_equal(stepresult, correct, decimal=7)
 
     def testFunctionKwarg(self):
         '''Tests newton.step() with a single-variable linear function,
@@ -57,7 +59,7 @@ class TestNewton(unittest.TestCase):
         pass
 
     def testQuadratic(self):
-        '''Tests newton.solve() with a quadratic function.'''
+        '''Tests newton.solve() with a quadratic function of one variable.'''
         pass
 
     def testSine(self):
