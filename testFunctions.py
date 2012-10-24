@@ -35,6 +35,8 @@ class TestFunctions(unittest.TestCase):
         np.testing.assert_array_almost_equal(Df_x, A)
 
     def testApproxJacobianRandom(self):
+        '''This currently fails because only matrices (not arrays, as returned
+        by np.random.rand() are properly handled.'''
         N = 20
         A = np.random.rand(N,N)
         x0 = np.random.rand(N,1)
@@ -53,8 +55,7 @@ class TestFunctions(unittest.TestCase):
             self.assertEqual(p(x), x ** 2 + 2 * x + 3)
 
     def testPolynomialNegativeCoeffs(self):
-        '''I don't see how that polynomial is working at all.
-        Maybe if I tried using negative as well as positive coefficients,
+        '''Maybe if I tried using negative as well as positive coefficients,
         it would fail?'''
         pass
 
