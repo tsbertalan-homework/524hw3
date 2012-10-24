@@ -24,14 +24,17 @@ class Newton(object):
         self._maxiter = maxiter
         self._dx = dx
 
-    def solve(self, x0):
+    def solve(self, x0, verbose=False):
         '''Return a root of f(x) = 0, using Newton's method, starting from
         initial guess x0'''
         x = x0
         for i in xrange(self._maxiter):
             fx = self._f(x)
             norm = np.linalg.norm(fx)
-#            print "norm is", norm
+            if verbose:
+                x_string = "(" + ",".join(str(a) for a in list(x)) + ")"
+                fx_string = "(" + ",".join(str(a) for a in list(fx)) + ")"
+                print "(i | x | fx | norm) = (", i, "|", x_string, "|", fx_string, "|", norm, ")"
             if norm < self._tol:
                 return x
             x = self.step(x, fx)
@@ -40,7 +43,7 @@ class Newton(object):
         if norm < self._tol:
             return x
         else:
-            raise TooManyIterationsException(norm) # TODO Alexander had the idea to use a custom exception type here.
+            raise TooManyIterationsException(self._maxiter, norm) # TODO Alexander had the idea to use a custom exception type here.
 
     def step(self, x, fx=None):
         '''Take a single step of a Newton method, starting from x
@@ -54,8 +57,9 @@ class Newton(object):
 
 class TooManyIterationsException(Exception):
 
-    def __init__(self, norm):
+    def __init__(self, iters, norm):
+        self.iters = iters
         self.norm = norm
         Exception.__init__(self, 'Maximum number of iterations exceeded, with final norm=%f'%self.norm)
     def __str__(self):
-        return repr('Maximum number of iterations exceeded, with final norm=%f'%self.norm)
+        return repr('After %i iterations, failed to converge (norm was still %f)' % (self.iters, self.norm))
