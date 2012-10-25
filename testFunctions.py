@@ -6,6 +6,20 @@ import unittest
 ADf = F.ApproximateJacobian  # from functions import ApproximateJacobian as ADf
 
 
+def TryJacobian(f, Df, test_cases, decimal=6):
+    for x in test_cases:
+        np.testing.assert_array_almost_equal(np.matrix(Df(x)), ADf(f, x), decimal=decimal)
+
+test_cases_1D = np.arange(-2, 2, .1)
+xs = np.arange(-2, 2, .5)
+ys = np.arange(-2, 2, .5)
+test_cases_2D = []
+for x in xs:
+    for y in ys:
+        test_cases_2D.append(np.matrix([[y], [x]]))
+
+
+
 class TestFunctions(unittest.TestCase):
     def testApproxJacobian1(self):
         '''For a linear function of one variable, checks
@@ -75,63 +89,43 @@ class TestFunctions(unittest.TestCase):
             self.assertEqual(p(x), -2 * x ** 2 + 5 * x - 6)
 
     def testJacobianLinear(self):
-        '''Check several analytical Jacobian functions, Df, against the numerical
-        approximation produced from the original function, f.'''
-        test_cases_1D = np.arange(-2, 2, .1)
+        '''Check that the ApproximateJacobian works for a 1D linear function.'''
         f = F.Linear()['f']
         Df = F.Linear()['Df']
-        for x in test_cases_1D:
-            np.testing.assert_array_almost_equal(Df(x), ADf(f, x)[0, 0], decimal=4)
+        TryJacobian(f, Df, test_cases_1D, decimal=5)
 
     def testJacobianSkewedSine(self):
-        '''Check several analytical Jacobian functions, Df, against the numerical
-        approximation produced from the original function, f.'''
+        '''Test the ApproximateJacobian for f(x) = a*x + b*sin(c*x)'''
         test_cases_1D = np.arange(-2, 2, .1)
         f = F.SkewedSine()['f']
         Df = F.SkewedSine()['Df']
-        for x in test_cases_1D:
-            np.testing.assert_array_almost_equal(Df(x), ADf(f, x)[0, 0], decimal=4)
+        TryJacobian(f, Df, test_cases_1D)
 
     def testJacobianExponential(self):
-        '''Check several analytical Jacobian functions, Df, against the numerical
-        approximation produced from the original function, f.'''
-        test_cases_1D = np.arange(-2, 2, .1)
+        '''Test the ApproximateJacobian for f(x) = a*exp(b*x)'''
         f = F.Exponential()['f']
         Df = F.Exponential()['Df']
-        for x in test_cases_1D:
-            np.testing.assert_array_almost_equal(Df(x), ADf(f, x)[0, 0], decimal=4)
+        TryJacobian(f, Df, test_cases_1D, decimal=4)
 
     def testJacobianLogarithmic(self):
-        '''Check several analytical Jacobian functions, Df, against the numerical
-        approximation produced from the original function, f.'''
-        test_cases_1D = np.arange(1, 2, .1)
+        '''Test ApproximateJacobian for f(x) = a*ln(b*x)'''
+        positive_test_cases_1D = np.arange(.1, 2, .1)
         f = F.Logarithmic()['f']
         Df = F.Logarithmic()['Df']
-        for x in test_cases_1D:
-            np.testing.assert_array_almost_equal(Df(x), ADf(f, x)[0, 0], decimal=4)
-
-
+        TryJacobian(f, Df, positive_test_cases_1D, decimal=4)
 
     def testJacobianQuadraticStrings(self):
-        '''Check several analytical Jacobian functions, Df, against the numerical
-        approximation produced from the original function, f.'''
-        test_cases_1D = np.arange(1, 2, .1)
+        '''Test ApproximateJacobian for f(x) = a*x^2 + b*x'''
         f = F.QuadraticStrings()['f']
         Df = F.QuadraticStrings()['Df']
-        for x in test_cases_1D:
-            np.testing.assert_array_almost_equal(Df(x), ADf(f, x)[0, 0], decimal=4)
+        TryJacobian(f, Df, test_cases_1D)
 
     def testJacobianLinear2D(self):
-        '''Check several analytical Jacobian functions, Df, against the numerical
-        approximation produced from the original function, f.'''
-        xs = np.arange(-2, 2, .5)
-        ys = np.arange(-2, 2, .5)
+        '''Test ApproximateJacobian for a 2D linear function with a full Jacobian
+        (that is, Jacobian is not simply a diagonal matrix.)'''
         f = F.Linear2D()['f']
         Df = F.Linear2D()['Df']
-        for x in xs:
-            for y in ys:
-                z = np.matrix([[y], [x]])
-                np.testing.assert_array_almost_equal(Df(z), ADf(f, z), decimal=4)
+        TryJacobian(f, Df, test_cases_2D)
 
 if __name__ == '__main__':
     unittest.main()
