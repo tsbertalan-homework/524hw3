@@ -61,17 +61,16 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(Df_x.shape, (N, N))
         np.testing.assert_array_almost_equal(Df_x, A)
 
-    def estApproxJacobianArrays(self):
-        '''Same as testApproxJacobian2, but with arrays rather than matrices'''
+    def testApproxJacobianArrays(self):
+        '''Same as testApproxJacobian2, but with arrays rather than matrices.
+        This test just shows that such use *does* fail.'''
         A = np.array(np.matrix("1. 2.; 3. 4."))
 
         def f(x):
             return A * x
         x0 = np.array(np.matrix("5; 6"))
         dx = 1.e-6
-        Df_x = F.ApproximateJacobian(f, x0, dx)
-        self.assertEqual(Df_x.shape, (2, 2))
-        np.testing.assert_array_almost_equal(Df_x, A)
+        self.assertRaises(ValueError, F.ApproximateJacobian, f, x0, dx)
 
     def testPolynomial(self):
         '''Tests the __call__() method of the functions.Polynomial() class
