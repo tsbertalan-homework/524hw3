@@ -16,14 +16,45 @@ def ApproximateJacobian(f, x, dx=1e-6):
     return Df_x
 
 
-def TestJacobian(f, Df, testcases, dx=1e-6, decimal=6):
-    '''Check an analytical Jacobian function Df against the numerical
-    approximation produced from the original function f. Check for each of the
-    test cases (N-by-1 matrices) in the list testcases.'''
-    for x in testcases:
-        analytical = Df(x)
-        numerical  = ApproximateJacobian(f, x, dx=dx)
-        np.testing.assert_array_almost_equal(analytical, numerical, decimal=decimal)
+def Linear():
+    f = lambda x: 3.0 * x ** 2 + 4.0 * x - 9.0
+    Df = lambda x: 6.0 * x + 4.0
+    return {'f': f, 'Df': Df}
+
+
+def SkewedSine():
+    f = lambda x: 2.0 * x + np.sin(x)
+    Df = lambda x: 2.0 + np.cos(x)
+    return {'f': f, 'Df': Df}
+
+
+def Exponential():
+    subjuggulator = 10**(-8)
+    f = lambda x: 4.5 * np.exp(9.2 * x) * subjuggulator
+    Df = lambda x: 4.5 * 9.2 * np.exp(9.2 * x) * subjuggulator
+    return {'f': f, 'Df': Df}
+
+
+def Logarithmic():
+    f = lambda x: 4.5 * np.log(9.2 * x)
+    Df = lambda x: 4.5 / x
+    return {'f': f, 'Df': Df}
+
+
+def AsciiSum(input_string):
+    n = 0
+    for c in input_string:
+        n += ord(c)
+    return n
+
+
+def QuadraticStrings():
+    a = AsciiSum('herp')
+    b = AsciiSum('derp')
+    subjuggulator = 10**(-8)
+    f = lambda x: a * x ** 2 * subjuggulator + b * x
+    Df = lambda x: 2 * a * x * subjuggulator + b
+    return {'f': f, 'Df': Df}
 
 
 class Polynomial(object):
