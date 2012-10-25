@@ -26,3 +26,12 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 
+Makefile
+gitignore
+index.rst
+make.bat
+conf.py
+checklist.txt*
+__init__.py
+_build*
+APC_524-HW_3.nja
