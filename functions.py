@@ -36,8 +36,9 @@ def Exponential():
 
 
 def Logarithmic():
-    f = lambda x: 4.5 * np.log(9.2 * x)
-    Df = lambda x: 4.5 / x
+    subjuggulator = 10**(-8)
+    f = lambda x: 4.5 * subjuggulator * np.log(9.2 * x)
+    Df = lambda x: 4.5 * subjuggulator / x
     return {'f': f, 'Df': Df}
 
 
