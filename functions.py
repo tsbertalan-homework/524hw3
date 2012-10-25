@@ -56,6 +56,17 @@ def QuadraticStrings():
     Df = lambda x: 2 * a * x * subjuggulator + b
     return {'f': f, 'Df': Df}
 
+def Linear2D():
+    def f(x):
+        y = np.matrix(np.zeros((2,1)))
+        y[0,0] = 5.4 * x[0,0] + 3.4 * x[1,0] + 6
+        y[1,0] = 5.2 * x[0,0] + 4.2 * x[1,0] + 4
+        return np.matrix(y)
+
+    def Df(x):
+        return np.matrix("5.4 3.4 ; 5.2 4.2")
+
+    return {'f': f, 'Df': Df}
 
 class Polynomial(object):
     """Callable polynomial object.
