@@ -59,7 +59,9 @@ class Newton(object):
         return x - h
 
 class TooManyIterations(Exception):
-
+    '''This exception should be raised when the (possibly user-specified)
+    maximum number of iterations has been surpassed without achieving the
+    (again, possibly user-specified) convergence tolerance.'''
     def __init__(self, iters, norm):
         self.iters = iters
         self.norm = norm
@@ -68,7 +70,9 @@ class TooManyIterations(Exception):
         return repr('After %i iterations, failed to converge (norm was still %f)' % (self.iters, self.norm))
 
 class ErrorTooLarge(Exception):
-
+    '''This exception should be raised when the solver is diverging, and
+    and therefore the error has surpassed some threshold value (that,
+    presumably, is larger than the initial error.)'''
     def __init__(self, radius, threshold):
         self.radius = radius
         self.threshold = threshold
