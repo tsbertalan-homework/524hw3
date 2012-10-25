@@ -84,7 +84,7 @@ class TestNewton(unittest.TestCase):
         HAS NO REAL ROOTS. The maximum number of iterations should be reached
         quickly.'''
         f = lambda x: 5 * x ** 2 + 3 * x + 6
-        solver = newton.Newton(f, tol=1.e-15, maxiter=40, threshold_radius=1)
+        solver = newton.Newton(f, tol=1.e-15, maxiter=3)
         self.assertRaises(newton.TooManyIterations, solver.solve, 2)
 
     def testAnalyticalJacobian1D(self):
@@ -105,7 +105,6 @@ class TestNewton(unittest.TestCase):
         x2 = solver.solve(2)
         self.assertAlmostEqual(x1, x1actual, places=4)
         self.assertAlmostEqual(x2, x2actual, places=4)
-        F.TestJacobian(f, Df, np.arange(-2, 2, .1), decimal=5)
 
     def testAnalyticalJacobian2D(self):
         '''In 2D, Supply a Jacobian function to newton.__init__(), and check
@@ -142,7 +141,6 @@ class TestNewton(unittest.TestCase):
         x2 = solver.solve(x02, verbose=False)
         np.testing.assert_array_almost_equal(x1, x1actual, decimal=4)
         np.testing.assert_array_almost_equal(x2, x2actual, decimal=4)
-        F.TestJacobian(f, Df, [x01, x2, x1, x2], decimal=5) # any (2,1) matrix should work as input.
 
     def testMixedJacobian(self):
         '''solves f1(x,y) and f2(x,y), rather than simply f1(x) and f2(y)'''
@@ -155,7 +153,7 @@ class TestNewton(unittest.TestCase):
             y[0] = f1x(X[0]) + f1y(X[1])
             y[1] = f2x(X[0]) + f2y(X[1])
             return y
-        
+
         def Df(X):
             f00 = F.Polynomial([2,  2])  # function of X[0] only
             f01 = F.Polynomial([4,  1])  # function of X[1] only
@@ -167,7 +165,7 @@ class TestNewton(unittest.TestCase):
             dy[1, 0] = f00(X[0])
             dy[1, 1] = f00(X[1])
             return dy
-        
+
         solver = newton.Newton(f)
         a = b = 'dummy'
         x1actual = np.matrix("-1.98594 ; -2.14115")
@@ -186,11 +184,17 @@ class TestNewton(unittest.TestCase):
         np.testing.assert_array_almost_equal(x2, x2actual, decimal=4)
         np.testing.assert_array_almost_equal(x3, x3actual, decimal=4)
         np.testing.assert_array_almost_equal(x4, x4actual, decimal=4)
-        F.TestJacobian(f, Df, [x01, x02, x03, x04, x1, x2, x3, x4], decimal=5)
 
     def testSine(self):
         '''This might actually be a bad idea.'''
         pass
+
+    def testDivergenceException(self):
+        '''arctangent'''
+        f = lambda x: np.arctan(x)
+        solver = newton.Newton(f)
+        self.assertRaises(newton.ErrorTooLarge, solver.solve, 2)
+
 
 if __name__ == "__main__":
     unittest.main()
