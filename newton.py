@@ -8,7 +8,7 @@ import functions as F
 
 
 class Newton(object):
-    def __init__(self, f, tol=1.e-6, maxiter=20, dx=1.e-6, jacobian=None, threshold_radius=1.e-6):
+    def __init__(self, f, tol=1.e-6, maxiter=20, dx=1.e-6, jacobian=None, threshold_radius=413):
         '''Return a new object to find roots of f(x) = 0 using Newton's method.
         tol:     tolerance for iteration (iterate until |f(x)| < tol)
         maxiter: maximum number of iterations to perform
@@ -36,15 +36,17 @@ class Newton(object):
                 x_string = "(" + ",".join(str(a) for a in list(x)) + ")"
                 fx_string = "(" + ",".join(str(a) for a in list(fx)) + ")"
                 print "(i | x | fx | norm) = (", i, "|", x_string, "|", fx_string, "|", norm, ")"
+            errornorm = np.linalg.norm(x - x0)
+            if errornorm > self._threshold_radius:
+                raise ErrorTooLarge(errornorm, self._threshold_radius)
             if norm < self._tol:
                 return x
             x = self.step(x, fx)
-        errornorm = np.linalg.norm(x - x0)
-        if errornorm < self._threshold_radius:
+        norm = np.linalg.norm(self._f(x))
+        if norm < self._tol:
             return x
         else:
-            raise ErrorTooLarge(errornorm, self._threshold_radius)  # Ok, which of these should I really be doing here?
-            #raise TooManyIterations(self._maxiter, errornorm)  # I need to think about this.
+            raise TooManyIterations(self._maxiter, errornorm)
 
     def step(self, x, fx=None):
         '''Take a single step of a Newton method, starting from x
@@ -61,7 +63,7 @@ class TooManyIterations(Exception):
     def __init__(self, iters, norm):
         self.iters = iters
         self.norm = norm
-        Exception.__init__(self, 'After %i iterations, failed to converge (norm was still %f)' % (self.iters, self.norm, self.radius))
+        Exception.__init__(self, 'After %i iterations, failed to converge (norm was still %f)' % (self.iters, self.norm))
     def __str__(self):
         return repr('After %i iterations, failed to converge (norm was still %f)' % (self.iters, self.norm))
 
@@ -70,6 +72,6 @@ class ErrorTooLarge(Exception):
     def __init__(self, radius, threshold):
         self.radius = radius
         self.threshold = threshold
-        Exception.__init__(self, 'Error radius of %f still outside of threshold %f.' % (self.radius, self.threshold))
+        Exception.__init__(self, 'Error radius of %i outside of threshold radius %i.' % (self.radius, self.threshold))
     def __str__(self):
-        return repr('Error radius of %f still outside of threshold %f.' % (self.radius, self.threshold))
+        return repr('Error radius of %i outside of threshold radius %i.' % (self.radius, self.threshold))
