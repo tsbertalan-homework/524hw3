@@ -4,6 +4,7 @@ import newton
 import unittest
 import numpy as np
 import functions as F
+from testFunctions import TryJacobian
 
 class TestNewton(unittest.TestCase):
     def testLinear(self):
@@ -141,10 +142,13 @@ class TestNewton(unittest.TestCase):
         x2 = solver.solve(x02, verbose=False)
         np.testing.assert_array_almost_equal(x1, x1actual, decimal=4)
         np.testing.assert_array_almost_equal(x2, x2actual, decimal=4)
+        TryJacobian(f, Df, [x01, x2, x1, x2], decimal=5)
+
 
     def testMixedJacobian(self):
         '''solves f1(x,y) and f2(x,y), rather than simply f1(x) and f2(y)'''
         def f(X):
+            X = X.reshape((2,1))
             f1x = F.Polynomial([1,  2, -3])
             f1y = F.Polynomial([2,  1, -4])
             f2x = F.Polynomial([4, -3, -2])
@@ -161,9 +165,9 @@ class TestNewton(unittest.TestCase):
             f11 = F.Polynomial([-4, 4])
             dy = np.matrix(np.zeros((2,2)))
             dy[0, 0] = f00(X[0])
-            dy[0, 1] = f00(X[1])
-            dy[1, 0] = f00(X[0])
-            dy[1, 1] = f00(X[1])
+            dy[0, 1] = f01(X[1])
+            dy[1, 0] = f10(X[0])
+            dy[1, 1] = f11(X[1])
             return dy
 
         solver = newton.Newton(f)
@@ -184,6 +188,7 @@ class TestNewton(unittest.TestCase):
         np.testing.assert_array_almost_equal(x2, x2actual, decimal=4)
         np.testing.assert_array_almost_equal(x3, x3actual, decimal=4)
         np.testing.assert_array_almost_equal(x4, x4actual, decimal=4)
+        TryJacobian(f, Df, [x01, x2, x1, x2], decimal=5)
 
     def testSine(self):
         '''This might actually be a bad idea.'''
