@@ -8,13 +8,20 @@ import functions as F
 
 
 class Newton(object):
+    '''Return a new object to find roots of f(x) = 0 using Newton's method.
+
+    tol:      tolerance for iteration (iterate until `|f(x)| < tol`)
+
+    maxiter:  maximum number of iterations to perform
+
+    dx:       step size for computing approximate Jacobian
+
+    jacobian: function to return a N by N matrix of partial derivatives of f, where N = len(x), num of dims of the f function
+
+    threshold_radius: error norm above which the solver should declare that it is diverging.'''
+
+
     def __init__(self, f, tol=1.e-6, maxiter=20, dx=1.e-6, jacobian=None, threshold_radius=413):
-        '''Return a new object to find roots of f(x) = 0 using Newton's method.
-        tol:     tolerance for iteration (iterate until |f(x)| < tol)
-        maxiter: maximum number of iterations to perform
-        dx:      step size for computing approximate Jacobian
-        jacobian: function to return a N by N matrix of partial derivatives
-                  of f, where N = len(x), num of dims of the f function'''
         if jacobian == None:
             self._jacobian = F.ApproximateJacobian  # args: self._f, x, self._dx
         else:  # TODO what a non-function is passed?

@@ -22,9 +22,10 @@ for x in xs:
 
 class TestFunctions(unittest.TestCase):
     def testApproxJacobian1(self):
-        '''For a linear function of one variable, checks
-            (1) that the Jacobian's shape is (1, 1)
-            (2) that the Jacobian is correct.'''
+        '''For a linear function of one variable, tests
+
+        1. that the Jacobian's shape is `(1, 1)`
+        2. that the Jacobian is correct.'''
         slope = 3.0
 
         def f(x):
@@ -36,9 +37,10 @@ class TestFunctions(unittest.TestCase):
         self.assertAlmostEqual(Df_x, slope)
 
     def testApproxJacobian2(self):
-        '''For a linear function of two variables, checks
-            (1) that the Jacobian's shape is (2, 2)
-            (2) that the Jacobian is correct (via ...almost_equal...)'''
+        '''For a linear function of two variables, tests
+
+        1. that the Jacobian's shape is (2, 2)
+        2. that the Jacobian is correct.'''
         A = np.matrix("1. 2.; 3. 4.")
 
         def f(x):
@@ -50,8 +52,8 @@ class TestFunctions(unittest.TestCase):
         np.testing.assert_array_almost_equal(Df_x, A)
 
     def testApproxJacobianRandom(self):
-        '''This currently fails because only matrices (not arrays, as returned
-        by np.random.rand() are properly handled.'''
+        '''For a 200-variable function `f(x) = A*x`, test that the approximate
+        Jacobian is the array `A`.'''
         N = 200
         A = np.matrix(np.random.rand(N, N))
         x0 = np.matrix(np.random.rand(N, 1))
@@ -63,6 +65,7 @@ class TestFunctions(unittest.TestCase):
 
     def testApproxJacobianArrays(self):
         '''Same as testApproxJacobian2, but with arrays rather than matrices.
+
         This test just shows that such use *does* fail.'''
         A = np.array(np.matrix("1. 2.; 3. 4."))
 
@@ -81,14 +84,13 @@ class TestFunctions(unittest.TestCase):
             self.assertEqual(p(x), x ** 2 + 2 * x + 3)
 
     def testPolynomialNegativeCoeffs(self):
-        '''Maybe if I tried using negative as well as positive coefficients,
-        it would fail? I don't see why it should.'''
+        '''Tests that the polynomial object also works ok with negative coefficients.'''
         p = F.Polynomial([-2, 5, -6])
         for x in np.linspace(200, 220, 11):
             self.assertEqual(p(x), -2 * x ** 2 + 5 * x - 6)
 
     def testJacobianLinear(self):
-        '''Check that the ApproximateJacobian works for a 1D linear function.'''
+        '''Test that the ApproximateJacobian works for a 1D linear function.'''
         f = F.Linear()['f']
         Df = F.Linear()['Df']
         TryJacobian(f, Df, test_cases_1D, decimal=5)

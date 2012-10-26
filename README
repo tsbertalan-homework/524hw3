@@ -1,0 +1,335 @@
+
+APC 524: HW 3
+*************
+
+Tom Bertalan 25 October, 2012
+
+This homework assignment demonstrates using unittest to maintain
+functionality of a Newton's-method rootfinder.
+
+
+List of Files
+^^^^^^^^^^^^^
+
+* newton.py
+
+* testNewton.py
+
+* functions.py
+
+* testFunctions.py
+
+
+newton.py
+=========
+
+This file contains functions implementing a Newton's-method
+rootfinder. The rootfinder can be instantiated with:
+
+   import newton
+   solver = newton.Newton(f)
+
+where f is a callable function of one or more variables, taking one
+argument that is a N-by-1 Numpy matrix, and returning a N-by-1 Numpy
+matrix.
+
+Then, for an initial guess *x0*, a root can be sought near that guess
+with:
+
+   root = solver.solve(x0)
+
+The solver will fail, raising one of the two exceptions listed below,
+if the condition described for that exception occurs.
+
+Other optional arguments are documented below, for the class
+*newton.Newton*.
+
+exception exception newton.ErrorTooLarge(radius, threshold)
+
+   This exception should be raised when the solver is diverging, and
+   and therefore the error has surpassed some threshold value (that,
+   presumably, is larger than the initial error.)
+
+class class newton.Newton(f, tol=1e-06, maxiter=20, dx=1e-06, jacobian=None, threshold_radius=413)
+
+   Return a new object to find roots of f(x) = 0 using Newton's
+   method.
+
+   tol:      tolerance for iteration (iterate until *|f(x)| < tol*)
+
+   maxiter:  maximum number of iterations to perform
+
+   dx:       step size for computing approximate Jacobian
+
+   jacobian: function to return a N by N matrix of partial derivatives
+   of f, where N = len(x), num of dims of the f function
+
+   threshold_radius: error norm above which the solver should declare
+   that it is diverging.
+
+   solve(x0, verbose=False)
+
+      Return a root of f(x) = 0, using Newton's method, starting from
+      initial guess x0
+
+   step(x, fx=None)
+
+      Take a single step of a Newton method, starting from x If the
+      argument fx is provided, assumes fx = f(x) x_{k+1} = x -
+      Df(x)^{-1}*f(x)
+
+exception exception newton.TooManyIterations(iters, norm)
+
+   This exception should be raised when the (possibly user-specified)
+   maximum number of iterations has been surpassed without achieving
+   the (again, possibly user-specified) convergence tolerance.
+
+class class newton.Newton(f, tol=1e-06, maxiter=20, dx=1e-06, jacobian=None, threshold_radius=413)
+
+   Return a new object to find roots of f(x) = 0 using Newton's
+   method.
+
+   tol:      tolerance for iteration (iterate until *|f(x)| < tol*)
+
+   maxiter:  maximum number of iterations to perform
+
+   dx:       step size for computing approximate Jacobian
+
+   jacobian: function to return a N by N matrix of partial derivatives
+   of f, where N = len(x), num of dims of the f function
+
+   threshold_radius: error norm above which the solver should declare
+   that it is diverging.
+
+   __weakref__
+
+      list of weak references to the object (if defined)
+
+   solve(x0, verbose=False)
+
+      Return a root of f(x) = 0, using Newton's method, starting from
+      initial guess x0
+
+   step(x, fx=None)
+
+      Take a single step of a Newton method, starting from x If the
+      argument fx is provided, assumes fx = f(x) x_{k+1} = x -
+      Df(x)^{-1}*f(x)
+
+
+testNewton.py
+=============
+
+This file can be run directly to test the functionality of the
+rootfinder implemented in newton.py. Incidentally, it also
+demonstrates use of that rootfinder.
+
+Test functions are contained within a unittest class.
+
+class class testNewton.TestNewton(methodName='runTest')
+
+   testAnalyticalJacobian1D()
+
+      In 1D, Supply a Jacobian function to newton.__init__(), and
+      check
+
+      1. that the solver._jacobian member function is that function
+
+      2. that the solution is still good.
+
+   testAnalyticalJacobian2D()
+
+      In 2D, Supply a Jacobian function to newton.__init__(), and
+      check
+
+      1. that the solver._jacobian member function is that function
+
+      2. that the solution is still good.
+
+   testDivergenceException()
+
+      Trying to find roots for f(x) = arctan(x) should quickly fail--
+      the solver should diverge rather than converge.
+
+   testFunctionKwarg()
+
+      Tests newton.step() with a single-variable linear function, and
+      also makes use of step()'s *fx* keyword argment.
+
+   testLinear()
+
+      Tests newton.solve() with a linear function of one variable.
+
+   testMaxIterationsException()
+
+      Tests newton.solve() with a quadratic function of one variable
+      that has no real roots. The maximum number of iterations should
+      be reached quickly.
+
+   testMixedJacobian()
+
+      solves *f1(x,y)* and *f2(x,y)*, rather than simply *f1(x)* and
+      *f2(y)*
+
+   testQuadratic()
+
+      Tests newton.solve() with a quadratic function of one variable.
+
+   testSine()
+
+      This might actually be a bad idea.
+
+   testStep1Var()
+
+      Tests newton.step() with a single-variable linear function.
+
+      x_next = x - Jacobian(x)^-1 * f(x)
+
+   testStep2Var()
+
+      Tests newton.step() with linear functions of two variables.
+
+      x_next = x - Jacobian(x)^-1 * f(x)
+
+   testStepBigVar()
+
+      Tests newton.step() with linear functions of many variables.
+
+      x_next = x - Jacobian(x)^-1 * f(x)
+
+   testTolerance()
+
+      Checks that the *tol* keyword is actually being set and used for
+      new Newton solver objects.
+
+
+functions.py
+============
+
+This file contains functions for approximating Jacobians and easily
+creating polynomial functions of arbitrary degree and coefficients. It
+also contains many test functions of 1 or more variables.
+
+functions.ApproximateJacobian(f, x, dx=1e-06)
+
+   Return an approximation of the Jacobian Df(x) as a numpy matrix
+
+functions.Exponential()
+
+   *f(x) = a*exp(x)*
+
+   Returns a dictionary containing the function and its Jacobian.
+
+functions.Linear()
+
+   Linear function of one variable. Returns a dictionary containing
+   the function and its Jacobian.
+
+functions.Linear2D()
+
+   Linear function of two variables.
+
+   Returns a dictionary containing the function and its Jacobian.
+
+functions.Logarithmic()
+
+   >>`<<f(x) = a*log(x)
+
+   Returns a dictionary containing the function and its Jacobian.
+
+class class functions.Polynomial(coeffs)
+
+   Callable polynomial object.
+
+   Example usage: to construct the polynomial p(x) = x^2 + 2x + 3, and
+   evaluate p(5):
+
+      import functions as F
+      p = F.Polynomial([1, 2, 3])
+      p(5)
+
+   f(x)
+
+      This is the actually callable-function part of the object.
+
+functions.SkewedSine()
+
+   Combination function: *f(x) = a*x + sin(x)*
+
+   Returns a dictionary containing the function and its Jacobian.
+
+
+testFunctions.py
+================
+
+This file contains test cases to check the functions defined in
+functions.py
+
+Test functions are contained within a unittest class.
+
+class class testFunctions.TestFunctions(methodName='runTest')
+
+   testApproxJacobian1()
+
+      For a linear function of one variable, tests
+
+      1. that the Jacobian's shape is *(1, 1)*
+
+      2. that the Jacobian is correct.
+
+   testApproxJacobian2()
+
+      For a linear function of two variables, tests
+
+      1. that the Jacobian's shape is (2, 2)
+
+      2. that the Jacobian is correct.
+
+   testApproxJacobianArrays()
+
+      Same as testApproxJacobian2, but with arrays rather than
+      matrices.
+
+      This test just shows that such use *does* fail.
+
+   testApproxJacobianRandom()
+
+      For a 200-variable function *f(x) = A*x*, test that the
+      approximate Jacobian is the array *A*.
+
+   testJacobianExponential()
+
+      Test the ApproximateJacobian for f(x) = a*exp(b*x)
+
+   testJacobianLinear()
+
+      Test that the ApproximateJacobian works for a 1D linear
+      function.
+
+   testJacobianLinear2D()
+
+      Test ApproximateJacobian for a 2D linear function with a full
+      Jacobian (that is, Jacobian is not simply a diagonal matrix.)
+
+   testJacobianLogarithmic()
+
+      Test ApproximateJacobian for f(x) = a*ln(b*x)
+
+   testJacobianQuadraticStrings()
+
+      Test ApproximateJacobian for f(x) = a*x^2 + b*x
+
+   testJacobianSkewedSine()
+
+      Test the ApproximateJacobian for f(x) = a*x + b*sin(c*x)
+
+   testPolynomial()
+
+      Tests the __call__() method of the functions.Polynomial() class
+      by comparing its output to a (slightly) more explicit
+      calculation.
+
+   testPolynomialNegativeCoeffs()
+
+      Tests that the polynomial object also works ok with negative
+      coefficients.

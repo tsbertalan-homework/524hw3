@@ -15,7 +15,8 @@ class TestNewton(unittest.TestCase):
         self.assertEqual(x, -2.0)
 
     def testTolerance(self):
-        '''Is the tol=??? keyword actually being set? Is it being used?'''
+        '''Checks that the `tol` keyword is actually being set and used for new
+        Newton solver objects.'''
         f = lambda x: 3.0 * x + 6.0
         tolerance = 1.e-15
         solver = newton.Newton(f, tol=tolerance)
@@ -25,7 +26,8 @@ class TestNewton(unittest.TestCase):
 
     def testStep1Var(self):
         '''Tests newton.step() with a single-variable linear function.
-        x_{k+1} = x - Df(x)^{-1}*f(x)'''
+
+        x_next = x - Jacobian(x)^-1 * f(x)'''
         slope = 9.0
         intercept = 4.0
         f = lambda x: slope * x + intercept
@@ -37,7 +39,8 @@ class TestNewton(unittest.TestCase):
 
     def testStep2Var(self):
         '''Tests newton.step() with linear functions of two variables.
-        x_{k+1} = x - Df(x)^{-1}*f(x)'''
+
+        x_next = x - Jacobian(x)^-1 * f(x)'''
         slope_matrix = np.matrix([[5.0, 12.8], [15.90, 3.14159]])
         intercept_matrix = np.matrix([[12], [16]])
         f = lambda x: np.dot(slope_matrix, x) + intercept_matrix
@@ -51,7 +54,8 @@ class TestNewton(unittest.TestCase):
 
     def testStepBigVar(self):
         '''Tests newton.step() with linear functions of many variables.
-        x_{k+1} = x - Df(x)^{-1}*f(x)'''
+
+        x_next = x - Jacobian(x)^-1 * f(x)'''
         N = 100
         slope_matrix = np.random.rand(N, N)
         intercept_matrix = np.random.rand(N, 1)
@@ -66,7 +70,7 @@ class TestNewton(unittest.TestCase):
 
     def testFunctionKwarg(self):
         '''Tests newton.step() with a single-variable linear function,
-        and also makes use of step()'s fx=??? keyword argment.'''
+        and also makes use of step()'s `fx` keyword argment.'''
         pass
 
     def testQuadratic(self):
@@ -81,8 +85,8 @@ class TestNewton(unittest.TestCase):
         np.testing.assert_array_almost_equal(x2, np.matrix([[x2actual]]), decimal=2)
 
     def testMaxIterationsException(self):
-        '''Tests newton.solve() with a quadratic function of one variable THAT
-        HAS NO REAL ROOTS. The maximum number of iterations should be reached
+        '''Tests newton.solve() with a quadratic function of one variable that
+        has no real roots. The maximum number of iterations should be reached
         quickly.'''
         f = lambda x: 5 * x ** 2 + 3 * x + 6
         solver = newton.Newton(f, tol=1.e-15, maxiter=3)
@@ -90,8 +94,9 @@ class TestNewton(unittest.TestCase):
 
     def testAnalyticalJacobian1D(self):
         '''In 1D, Supply a Jacobian function to newton.__init__(), and check
-        (1) that the solver._jacobian member function is that function
-        (2) that the solution is still good.'''
+
+        1. that the solver._jacobian member function is that function
+        2. that the solution is still good.'''
         f = lambda x: 3.0 * x ** 2 + 4.0 * x - 9.0
         Df = lambda x: 6.0 * x + 4.0
         solver = newton.Newton(f, jacobian=Df)
@@ -109,8 +114,9 @@ class TestNewton(unittest.TestCase):
 
     def testAnalyticalJacobian2D(self):
         '''In 2D, Supply a Jacobian function to newton.__init__(), and check
-        (1) that the solver._jacobian member function is that function
-        (2) that the solution is still good.'''
+
+        1. that the solver._jacobian member function is that function
+        2. that the solution is still good.'''
         def f(x):
             f1 = F.Polynomial([3.0, 4.0, -9.0])  # solutions of this polynomial are -2.522588 and 1.189285
             f2 = F.Polynomial([9.3, 2.1, -5.6])   # solutions of this polynomial are -0.897057 and 0.671251
@@ -131,9 +137,7 @@ class TestNewton(unittest.TestCase):
         solver = newton.Newton(f, jacobian=Df)
         # self.assertIs(solver._jacobian, Df) # this doesn't work.
         a = b = 'dummy'  # solver._jacobian has an underscore for a reason:
-        # it requires these dummy arguments, to be compatible with functions.ApproximateJacobian()
-#        for x in xrange(-10, 10, 30):
-#            self.assertEqual(solver._jacobian(a, x, b), Df(x))  # is this just busywork?
+            # it requires these dummy arguments, to be compatible with functions.ApproximateJacobian()
         x1actual = np.matrix("-2.522588 ; -0.897057")
         x2actual = np.matrix("1.189285  ; 0.671251")
         x01 = np.matrix("-3; -1")
@@ -146,7 +150,7 @@ class TestNewton(unittest.TestCase):
 
 
     def testMixedJacobian(self):
-        '''solves f1(x,y) and f2(x,y), rather than simply f1(x) and f2(y)'''
+        '''solves `f1(x,y)` and `f2(x,y)`, rather than simply `f1(x)` and `f2(y)`'''
         def f(X):
             X = X.reshape((2,1))
             f1x = F.Polynomial([1,  2, -3])
@@ -195,7 +199,8 @@ class TestNewton(unittest.TestCase):
         pass
 
     def testDivergenceException(self):
-        '''arctangent'''
+        '''Trying to find roots for f(x) = arctan(x) should quickly
+        fail--the solver should diverge rather than converge.'''
         f = lambda x: np.arctan(x)
         solver = newton.Newton(f)
         self.assertRaises(newton.ErrorTooLarge, solver.solve, 2)

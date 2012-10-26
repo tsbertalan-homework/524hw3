@@ -2,7 +2,7 @@ import numpy as np
 
 
 def ApproximateJacobian(f, x, dx=1e-6):
-    """Return an approximation of the Jacobian Df(x) as a numpy matrix"""
+    '''Return an approximation of the Jacobian Df(x) as a numpy matrix'''
     try:
         n = len(x)
     except TypeError:
@@ -17,18 +17,26 @@ def ApproximateJacobian(f, x, dx=1e-6):
 
 
 def Linear():
+    '''Linear function of one variable.
+    Returns a dictionary containing the function and its Jacobian.'''
     f = lambda x: 3.0 * x ** 2 + 4.0 * x - 9.0
     Df = lambda x: 6.0 * x + 4.0
     return {'f': f, 'Df': Df}
 
 
 def SkewedSine():
+    '''Combination function: `f(x) = a*x + sin(x)`
+
+    Returns a dictionary containing the function and its Jacobian.'''
     f = lambda x: 2.0 * x + np.sin(x)
     Df = lambda x: 2.0 + np.cos(x)
     return {'f': f, 'Df': Df}
 
 
 def Exponential():
+    '''`f(x) = a*exp(x)`
+
+    Returns a dictionary containing the function and its Jacobian.'''
     subjuggulator = 10**(-8)
     f = lambda x: 4.5 * np.exp(9.2 * x) * subjuggulator
     Df = lambda x: 4.5 * 9.2 * np.exp(9.2 * x) * subjuggulator
@@ -36,6 +44,9 @@ def Exponential():
 
 
 def Logarithmic():
+    '''`f(x) = a*log(x)
+
+    Returns a dictionary containing the function and its Jacobian.'''
     subjuggulator = 10**(-8)
     f = lambda x: 4.5 * subjuggulator * np.log(9.2 * x)
     Df = lambda x: 4.5 * subjuggulator / x
@@ -58,6 +69,9 @@ def QuadraticStrings():
     return {'f': f, 'Df': Df}
 
 def Linear2D():
+    '''Linear function of two variables.
+
+    Returns a dictionary containing the function and its Jacobian.'''
     def f(x):
         y = np.matrix(np.zeros((2,1)))
         y[0,0] = 5.4 * x[0,0] + 3.4 * x[1,0] + 6
@@ -70,13 +84,14 @@ def Linear2D():
     return {'f': f, 'Df': Df}
 
 class Polynomial(object):
-    """Callable polynomial object.
+    '''Callable polynomial object.
 
     Example usage: to construct the polynomial p(x) = x^2 + 2x + 3,
-    and evaluate p(5):
+    and evaluate p(5): ::
 
-    p = Polynomial([1, 2, 3])
-    p(5)"""
+        import functions as F
+        p = F.Polynomial([1, 2, 3])
+        p(5)'''
 
     def __init__(self, coeffs):
         self._coeffs = coeffs
@@ -85,6 +100,7 @@ class Polynomial(object):
         return "Polynomial(%s)" % (", ".join([str(x) for x in self._coeffs]))
 
     def f(self, x):
+        '''This is the actually-callable-function part of the object.'''
         ans = self._coeffs[0]
         for c in self._coeffs[1:]:
             ans = x * ans + c
