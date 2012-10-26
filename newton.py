@@ -8,20 +8,15 @@ import functions as F
 
 
 class Newton(object):
-    '''Return a new object to find roots of f(x) = 0 using Newton's method.
+    def __init__(self, f, tol=1.e-6, maxiter=20, dx=1.e-6, jacobian=None, thresh=413):
+        '''Creates a new object to find roots of f(x) = 0 using Newton's method.
 
-    tol:      tolerance for iteration (iterate until `|f(x)| < tol`)
+        :param tol:      tolerance for iteration (iterate until `|f(x)| < tol`)
+        :param maxiter:  maximum number of iterations to perform
+        :param dx:       step size for computing approximate Jacobian
+        :param jacobian: function to return a N by N matrix of partial derivatives of f, where N = len(x), num of dims of the f function
+        :param thresh: error norm above which the solver should declare that it is diverging.'''
 
-    maxiter:  maximum number of iterations to perform
-
-    dx:       step size for computing approximate Jacobian
-
-    jacobian: function to return a N by N matrix of partial derivatives of f, where N = len(x), num of dims of the f function
-
-    threshold_radius: error norm above which the solver should declare that it is diverging.'''
-
-
-    def __init__(self, f, tol=1.e-6, maxiter=20, dx=1.e-6, jacobian=None, threshold_radius=413):
         if jacobian == None:
             self._jacobian = F.ApproximateJacobian  # args: self._f, x, self._dx
         else:  # TODO what a non-function is passed?
@@ -30,7 +25,7 @@ class Newton(object):
         self._tol = tol
         self._maxiter = maxiter
         self._dx = dx
-        self._threshold_radius = threshold_radius
+        self._thresh = thresh
 
     def solve(self, x0, verbose=False):
         '''Return a root of f(x) = 0, using Newton's method, starting from
@@ -44,8 +39,8 @@ class Newton(object):
                 fx_string = "(" + ",".join(str(a) for a in list(fx)) + ")"
                 print "(i | x | fx | norm) = (", i, "|", x_string, "|", fx_string, "|", norm, ")"
             errornorm = np.linalg.norm(x - x0)
-            if errornorm > self._threshold_radius:
-                raise ErrorTooLarge(errornorm, self._threshold_radius)
+            if errornorm > self._thresh:
+                raise ErrorTooLarge(errornorm, self._thresh)
             if norm < self._tol:
                 return x
             x = self.step(x, fx)

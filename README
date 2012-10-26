@@ -44,12 +44,6 @@ if the condition described for that exception occurs.
 Other optional arguments are documented below, for the class
 *newton.Newton*.
 
-exception exception newton.ErrorTooLarge(radius, threshold)
-
-   This exception should be raised when the solver is diverging, and
-   and therefore the error has surpassed some threshold value (that,
-   presumably, is larger than the initial error.)
-
 class class newton.Newton(f, tol=1e-06, maxiter=20, dx=1e-06, jacobian=None, threshold_radius=413)
 
    Return a new object to find roots of f(x) = 0 using Newton's
@@ -78,43 +72,17 @@ class class newton.Newton(f, tol=1e-06, maxiter=20, dx=1e-06, jacobian=None, thr
       argument fx is provided, assumes fx = f(x) x_{k+1} = x -
       Df(x)^{-1}*f(x)
 
-exception exception newton.TooManyIterations(iters, norm)
+class class newton.TooManyIterations(iters, norm)
 
    This exception should be raised when the (possibly user-specified)
    maximum number of iterations has been surpassed without achieving
    the (again, possibly user-specified) convergence tolerance.
 
-class class newton.Newton(f, tol=1e-06, maxiter=20, dx=1e-06, jacobian=None, threshold_radius=413)
+class class newton.ErrorTooLarge(radius, threshold)
 
-   Return a new object to find roots of f(x) = 0 using Newton's
-   method.
-
-   tol:      tolerance for iteration (iterate until *|f(x)| < tol*)
-
-   maxiter:  maximum number of iterations to perform
-
-   dx:       step size for computing approximate Jacobian
-
-   jacobian: function to return a N by N matrix of partial derivatives
-   of f, where N = len(x), num of dims of the f function
-
-   threshold_radius: error norm above which the solver should declare
-   that it is diverging.
-
-   __weakref__
-
-      list of weak references to the object (if defined)
-
-   solve(x0, verbose=False)
-
-      Return a root of f(x) = 0, using Newton's method, starting from
-      initial guess x0
-
-   step(x, fx=None)
-
-      Take a single step of a Newton method, starting from x If the
-      argument fx is provided, assumes fx = f(x) x_{k+1} = x -
-      Df(x)^{-1}*f(x)
+   This exception should be raised when the solver is diverging, and
+   and therefore the error has surpassed some threshold value (that,
+   presumably, is larger than the initial error.)
 
 
 testNewton.py
@@ -175,10 +143,6 @@ class class testNewton.TestNewton(methodName='runTest')
 
       Tests newton.solve() with a quadratic function of one variable.
 
-   testSine()
-
-      This might actually be a bad idea.
-
    testStep1Var()
 
       Tests newton.step() with a single-variable linear function.
@@ -233,7 +197,7 @@ functions.Linear2D()
 
 functions.Logarithmic()
 
-   >>`<<f(x) = a*log(x)
+   *f(x) = a*log(x)*
 
    Returns a dictionary containing the function and its Jacobian.
 
@@ -250,7 +214,7 @@ class class functions.Polynomial(coeffs)
 
    f(x)
 
-      This is the actually callable-function part of the object.
+      This is the actually-callable-function part of the object.
 
 functions.SkewedSine()
 

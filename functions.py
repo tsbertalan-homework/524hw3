@@ -44,7 +44,7 @@ def Exponential():
 
 
 def Logarithmic():
-    '''`f(x) = a*log(x)
+    '''`f(x) = a*log(x)`
 
     Returns a dictionary containing the function and its Jacobian.'''
     subjuggulator = 10**(-8)
