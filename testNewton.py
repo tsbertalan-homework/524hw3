@@ -194,10 +194,6 @@ class TestNewton(unittest.TestCase):
         np.testing.assert_array_almost_equal(x4, x4actual, decimal=4)
         TryJacobian(f, Df, [x01, x2, x1, x2], decimal=5)
 
-    def testSine(self):
-        '''This might actually be a bad idea.'''
-        pass
-
     def testDivergenceException(self):
         '''Trying to find roots for f(x) = arctan(x) should quickly
         fail--the solver should diverge rather than converge.'''
