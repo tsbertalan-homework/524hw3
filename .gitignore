@@ -35,3 +35,6 @@ checklist.txt*
 __init__.py
 _build*
 APC_524-HW_3.nja
+*~
+*.swp
+*.bak
